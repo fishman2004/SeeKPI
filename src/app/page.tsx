@@ -93,14 +93,16 @@ export default function DashboardPage() {
             const posGap = kpis.positivacao.realizado - kpis.positivacao.meta;
             const posGapLabel = posGap >= 0 ? `Superamos ${formatNumber(posGap)}` : `Faltam ${formatNumber(Math.abs(posGap))}`;
 
-            // Reppos (% de Participação)
-            const repposFatPercent = calcPercent(kpis.reppos.realizado, kpis.faturamento.realizado);
-            const repposPosPercent = calcPercent(kpis.reppos.positivacao, kpis.positivacao.realizado);
+            // Reppos (% de Participação estritamente sobre Reckitt Core + Vestacy)
+            const repposFatPercent = kpis.reppos.percentFat || calcPercent(kpis.reppos.realizado, kpis.faturamento.realizado);
+            const repposPosPercent = kpis.reppos.percentPos || calcPercent(kpis.reppos.positivacao, kpis.positivacao.realizado);
 
-            // PDV Premiado
-            const totalDiamond = data.data.charts.pdvBreakdown.filter((x: any) => x.categoria_loja === 'DIAMOND').reduce((a: any,b: any) => a + b.total_lojas, 0);
-            const totalGold = data.data.charts.pdvBreakdown.filter((x: any) => x.categoria_loja === 'GOLD').reduce((a: any,b: any) => a + b.total_lojas, 0);
-            const pdvPercent = calcPercent(kpis.pdvPremiado.diamond + kpis.pdvPremiado.gold, totalDiamond + totalGold);
+            // PDV Premiado (Gold e Diamond Formatados com Total / Atingidos)
+            const dBat = kpis.pdvPremiado.diamond || 0;
+            const dTot = kpis.pdvPremiado.diamondTotal || 26;
+            const gBat = kpis.pdvPremiado.gold || 0;
+            const gTot = kpis.pdvPremiado.goldTotal || 141;
+            const pdvPercent = calcPercent(dBat + gBat, dTot + gTot);
 
             setKpiData([
               {
@@ -122,7 +124,7 @@ export default function DashboardPage() {
                 currentValue: formatMoney(kpis.reppos.realizado),
                 targetValue: `${repposFatPercent.toFixed(1)}% do Fat | ${repposPosPercent.toFixed(1)}% da Pos`,
                 percentage: repposFatPercent, trend: 'up',
-                gapLabel: 'Participação Geral', gapColor: 'green'
+                gapLabel: 'Share Reckitt+Vestacy', gapColor: 'green'
               },
               {
                 id: 'categorias', title: 'CLC Categorias', icon: '📦',
@@ -132,26 +134,23 @@ export default function DashboardPage() {
               },
               {
                 id: 'pdv-premiado', title: 'PDV Premiado', icon: '🏆',
-                currentValue: `${kpis.pdvPremiado.diamond} Diamond | ${kpis.pdvPremiado.gold} Gold`,
-                targetValue: `Atingiram (de ${totalDiamond} D | ${totalGold} G)`,
+                currentValue: `Diamond ${dBat}/${dTot} | Gold ${gBat}/${gTot}`,
+                targetValue: `PDVs Batidos (Total ${dBat + gBat}/${dTot + gTot})`,
                 percentage: pdvPercent, trend: pdvPercent >= 100 ? 'up' : 'down'
               }
             ]);
 
             setChartsData(data.data.charts);
             
-            const dateLabel = (selectedDia && selectedMes) ? `${selectedDia}/${selectedMes}` : (selectedMes ? `Mês ${selectedMes}` : 'Hoje');
-
             setQuickStats([
-              { label: `Vendedores Ativos (${dateLabel})`, value: `${resDia.vendedoresAtivos || 0} (Faltam ${resDia.vendedoresFaltam || 0})`, icon: '👥' },
-              { label: `Pedidos (${dateLabel}) / Total`, value: `${resDia.pedidosHoje || 0} / ${resDia.pedidosTotal || 0}`, icon: '📝' },
-              { label: `Faturamento do Dia (${dateLabel})`, value: formatMoney(resDia.faturamentoHoje || 0), icon: '📊' },
-              { label: `Fornecedor Destaque (${dateLabel})`, value: resDia.fornecedorDestaque || 'N/A', icon: '🌟' },
-              { label: `Região Destaque (${dateLabel})`, value: resDia.pracaMaisPositivou || 'N/A', icon: '📍' },
+              { label: `Vendedores Ativos`, value: `${resDia.vendedoresAtivos || 0} (Faltam ${resDia.vendedoresFaltam || 0})`, icon: '👥' },
+              { label: `Pedidos Totais`, value: `${resDia.pedidosHoje || 0} / ${resDia.pedidosTotal || 0}`, icon: '📝' },
+              { label: `Faturamento Hoje`, value: formatMoney(resDia.faturamentoHoje || 0), icon: '📊' },
+              { label: `Fornecedor Destaque`, value: resDia.fornecedorDestaque || 'N/A', icon: '🌟' },
+              { label: `Região Destaque`, value: resDia.pracaMaisPositivou || 'N/A', icon: '📍' },
             ]);
           }
           setLoadingData(false);
-          // Trigger stagger animations after data load
           setTimeout(() => setCardsVisible(true), 100);
         })
         .catch(err => {
@@ -159,7 +158,7 @@ export default function DashboardPage() {
           setLoadingData(false);
         });
     }
-  }, [isAuthenticated, selectedMes, selectedDia]);
+  }, [isAuthenticated]);
 
   // Show nothing while checking auth state
   if (isLoading || !isAuthenticated) {
@@ -172,52 +171,6 @@ export default function DashboardPage() {
       <main className="main-content">
         <Header />
         <div className="page-content">
-          
-          {/* Global Filters */}
-          <div className="filters-container glass-card" style={{ padding: '15px', marginBottom: '20px', borderRadius: '12px', display: 'flex', gap: '15px', alignItems: 'center' }}>
-            <span style={{ color: 'white', fontWeight: 'bold' }}>Filtros:</span>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Mês</label>
-              <select 
-                value={selectedMes} 
-                onChange={(e) => setSelectedMes(e.target.value)}
-                style={{ background: '#1e1e2d', color: 'white', border: '1px solid #333', padding: '6px 12px', borderRadius: '6px' }}
-              >
-                <option value="">Todos</option>
-                <option value="01">Janeiro</option>
-                <option value="02">Fevereiro</option>
-                <option value="03">Março</option>
-                <option value="04">Abril</option>
-                <option value="05">Maio</option>
-                <option value="06">Junho</option>
-                <option value="07">Julho</option>
-                <option value="08">Agosto</option>
-                <option value="09">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-              </select>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <label style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Dia</label>
-              <select 
-                value={selectedDia} 
-                onChange={(e) => setSelectedDia(e.target.value)}
-                style={{ background: '#1e1e2d', color: 'white', border: '1px solid #333', padding: '6px 12px', borderRadius: '6px' }}
-                disabled={!selectedMes}
-              >
-                <option value="">Todos</option>
-                {Array.from({ length: 31 }, (_, i) => {
-                  const day = String(i + 1).padStart(2, '0');
-                  return <option key={day} value={day}>{day}</option>;
-                })}
-              </select>
-            </div>
-            
-            {(!selectedMes && selectedDia) && <span style={{ color: 'var(--danger)', fontSize: '12px' }}>Selecione um mês primeiro</span>}
-          </div>
 
           {/* KPI Summary Cards Grid */}
           <section className="kpi-grid">

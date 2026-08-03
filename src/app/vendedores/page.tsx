@@ -748,39 +748,36 @@ export default function VendedoresPage() {
               </select>
             </div>
 
-            <div className="filter-bar">
-              <div className="filter-bar__item">
-                <label>Mês</label>
-                <select value={selectedMes} onChange={(e) => setSelectedMes(e.target.value)}>
-                  <option value="">Todos</option>
-                  <option value="01">Janeiro</option>
-                  <option value="02">Fevereiro</option>
-                  <option value="03">Março</option>
-                  <option value="04">Abril</option>
-                  <option value="05">Maio</option>
-                  <option value="06">Junho</option>
-                  <option value="07">Julho</option>
-                  <option value="08">Agosto</option>
-                  <option value="09">Setembro</option>
-                  <option value="10">Outubro</option>
-                  <option value="11">Novembro</option>
-                  <option value="12">Dezembro</option>
-                </select>
-              </div>
-              <div className="filter-bar__item">
-                <label>Dia</label>
-                <select
-                  value={selectedDia}
-                  onChange={(e) => setSelectedDia(e.target.value)}
-                  disabled={!selectedMes}
-                >
-                  <option value="">Todos</option>
-                  {Array.from({ length: 31 }, (_, i) => {
-                    const day = String(i + 1).padStart(2, '0');
-                    return <option key={day} value={day}>{day}</option>;
-                  })}
-                </select>
-              </div>
+            <div className="filter-bar" style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '6px 16px', borderRadius: '9999px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                📅 Período:
+              </span>
+              <select
+                value={selectedMes || '06'}
+                onChange={(e) => setSelectedMes(e.target.value)}
+                style={{ border: 'none', background: 'transparent', boxShadow: 'none' }}
+              >
+                <option value="06">Junho (Mês Atual)</option>
+                <option value="05">Maio</option>
+                <option value="04">Abril</option>
+                <option value="03">Março</option>
+                <option value="02">Fevereiro</option>
+                <option value="01">Janeiro</option>
+              </select>
+
+              <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
+
+              <select
+                value={selectedDia}
+                onChange={(e) => setSelectedDia(e.target.value)}
+                style={{ border: 'none', background: 'transparent', boxShadow: 'none' }}
+              >
+                <option value="">Acumulado do Mês</option>
+                {Array.from({ length: 31 }, (_, i) => {
+                  const day = String(i + 1).padStart(2, '0');
+                  return <option key={day} value={day}>Dia {day}</option>;
+                })}
+              </select>
             </div>
           </div>
 

@@ -49,13 +49,21 @@ export async function GET(request: Request) {
     
     const meta_positivacao_calculada = Math.round((carteiraResult?.total_carteira || 0) * 0.70);
 
-    // 3. Reppos (Pedidos começando com 380)
+    // 3. Reppos (Pedidos começando com 380 vs Faturamento e Positivação de Reckitt Core + Vestacy)
     const repposResult = db.prepare(`
       SELECT 
         SUM(valor) as faturamento_reppos,
         COUNT(DISTINCT id_cliente) as positivacao_reppos
       FROM vendas_brutas
-      WHERE ${whereClause} AND numero_pedido LIKE '380%'
+      WHERE ${whereClause} AND (numero_pedido LIKE '380%' OR posicao_ped LIKE '380%')
+    `).get(...params) as any;
+
+    const totalReckittVestacy = db.prepare(`
+      SELECT 
+        SUM(valor) as fat_total,
+        COUNT(DISTINCT id_cliente) as pos_total
+      FROM vendas_brutas
+      WHERE ${whereClause} AND UPPER(nome_fornecedor) IN ('RECKITT CORE', 'VESTACY')
     `).get(...params) as any;
 
     // 4. Categorias CLC (Somente as que estão cadastradas na base_produtos)
@@ -86,34 +94,37 @@ export async function GET(request: Request) {
       }
     });
 
-    // 5. PDV Premiado (Lojas Diamond e Gold separadas)
-    const pdvParams = [...params];
-    if (mes) pdvParams.push(`%${mes}%`);
-
-    const pdvBreakdown = db.prepare(`
-      SELECT 
-        COALESCE(p.quarter, 'N/A') as quarter,
-        COALESCE(UPPER(p.categoria_loja), 'GERAL') as categoria_loja,
-        COUNT(*) as total_lojas,
-        SUM(CASE WHEN COALESCE(vendas.atingido, 0) >= p.meta_financeira THEN 1 ELSE 0 END) as lojas_atingiram
+    // 5. PDV Premiado (Lojas Diamond e Gold separadas com faturamento Reckitt Core)
+    const pdvsDbDashboard = db.prepare(`
+      SELECT p.id_cliente, p.meta_financeira, p.categoria_loja
       FROM base_pdv_premiado p
-      LEFT JOIN (
-        SELECT id_cliente, SUM(valor) as atingido
-        FROM vendas_brutas
-        WHERE ${whereClause}
-        GROUP BY id_cliente
-      ) vendas ON p.id_cliente = vendas.id_cliente
-      WHERE 1=1 ${mes ? `AND p.mes LIKE ?` : ''}
-      GROUP BY p.quarter, p.categoria_loja
-      ORDER BY p.quarter
-    `).all(...pdvParams);
+      WHERE p.id_cliente IS NOT NULL AND p.id_cliente != ''
+      GROUP BY p.id_cliente
+    `).all() as any[];
 
-    // Summary PDV para o Card
     let diamondAtingiram = 0;
+    let diamondTotal = 0;
     let goldAtingiram = 0;
-    pdvBreakdown.forEach((b: any) => {
-      if (b.categoria_loja === 'DIAMOND') diamondAtingiram += b.lojas_atingiram;
-      if (b.categoria_loja === 'GOLD') goldAtingiram += b.lojas_atingiram;
+    let goldTotal = 0;
+
+    pdvsDbDashboard.forEach(pdv => {
+      const meta = pdv.meta_financeira || 0;
+      const realReckitt = (db.prepare(`
+        SELECT SUM(valor) as total
+        FROM vendas_brutas
+        WHERE id_cliente = ? AND UPPER(nome_fornecedor) = 'RECKITT CORE'
+      `).get(pdv.id_cliente) as any)?.total || 0;
+
+      const isBatido = meta > 0 && realReckitt >= meta;
+      const categoria = pdv.categoria_loja || (meta >= 10000 ? 'DIAMOND' : 'GOLD');
+
+      if (categoria === 'DIAMOND') {
+        diamondTotal++;
+        if (isBatido) diamondAtingiram++;
+      } else {
+        goldTotal++;
+        if (isBatido) goldAtingiram++;
+      }
     });
 
     // 6. Gráfico de Vendas por Canal (A lógica das letras B, G, P)
@@ -238,7 +249,9 @@ export async function GET(request: Request) {
           },
           reppos: {
             realizado: repposResult?.faturamento_reppos || 0,
-            positivacao: repposResult?.positivacao_reppos || 0
+            positivacao: repposResult?.positivacao_reppos || 0,
+            percentFat: totalReckittVestacy?.fat_total > 0 ? ((repposResult?.faturamento_reppos || 0) / totalReckittVestacy.fat_total) * 100 : 0,
+            percentPos: totalReckittVestacy?.pos_total > 0 ? ((repposResult?.positivacao_reppos || 0) / totalReckittVestacy.pos_total) * 100 : 0,
           },
           clc: {
             categoriasBatidas: categoriasBatidas,
@@ -247,7 +260,9 @@ export async function GET(request: Request) {
           },
           pdvPremiado: {
             diamond: diamondAtingiram,
-            gold: goldAtingiram
+            diamondTotal: diamondTotal,
+            gold: goldAtingiram,
+            goldTotal: goldTotal
           },
           resumoDia: {
             data: ultimaData,
@@ -265,7 +280,7 @@ export async function GET(request: Request) {
         charts: {
           clcByCategory,
           salesBySupervisor,
-          pdvBreakdown
+          pdvBreakdown: []
         }
       }
     });

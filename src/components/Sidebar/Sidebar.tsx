@@ -22,7 +22,6 @@ const NAV_ITEMS: NavItem[] = [
   { icon: '🏠', label: 'Home',          href: '/' },
   { icon: '👤', label: 'Vendedores',    href: '/vendedores' },
   { icon: '💰', label: 'Vendas',        href: '/vendas' },
-  { icon: '🤝', label: 'Positivações',  href: '/positivacoes' },
   { icon: '🛒', label: 'Reppos',        href: '/reppos' },
   { icon: '📦', label: 'Categorias',    href: '/categorias' },
   { icon: '📋', label: 'MSL',           href: '/msl' },

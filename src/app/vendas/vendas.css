@@ -1,0 +1,209 @@
+/* ------------------------------------------------------------------ */
+/*  Vendas Page CSS                                                   */
+/* ------------------------------------------------------------------ */
+
+.vendas-page {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Card Container de Tabelas */
+.vendas-table-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  margin-bottom: 24px;
+}
+
+.vendas-table-header {
+  padding: 18px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vendas-table-title {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Tabela Estilizada com Scroll Horizontal Visivel */
+.vendas-table-card {
+  overflow: visible;
+}
+
+.vendas-table-wrapper {
+  width: 100%;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  display: block;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+.vendas-table-wrapper::-webkit-scrollbar {
+  height: 10px;
+}
+
+.vendas-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 6px;
+}
+
+.vendas-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 6px;
+  border: 2px solid rgba(15, 23, 42, 0.8);
+}
+
+.vendas-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.8);
+}
+
+.vendas-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.vendas-table th {
+  background: rgba(15, 23, 42, 0.8);
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.vendas-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.vendas-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.vendas-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.vendas-table .td-nome {
+  font-weight: 700;
+  color: #f8fafc;
+  min-width: 220px;
+}
+
+.vendas-table .td-num {
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  text-align: right;
+  min-width: 130px;
+}
+
+.vendas-table .td-center {
+  text-align: center;
+  min-width: 120px;
+}
+
+/* Badges de Percentual e GAP Coloridos */
+.percent-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  min-width: 68px;
+}
+
+.percent-badge--success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.percent-badge--danger {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.gap-positive {
+  color: #34d399 !important;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.gap-negative {
+  color: #f87171 !important;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.vendas-badge--danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Subtabela de Fornecedores dentro da Equipe */
+.vendor-card-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.vendor-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.subtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.subtable th {
+  color: #94a3b8;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.subtable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
