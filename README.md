@@ -1,91 +1,190 @@
-📊 SeeKPI — Plataforma de Acompanhamento de Vendas & KPIs
-Documento de Projeto — Versão 1.0 — Junho 2026
+# 📊 SeeKPI — Plataforma de Acompanhamento de Vendas & KPIs
 
-🎯 Visão Geral
-Item	Detalhe
-Problema	Dados de vendas fragmentados em múltiplas planilhas Excel distribuídas por e-mail, dificultando o acesso rápido à informação por parte da equipe
-Solução	Plataforma web responsiva com dashboards visuais, acesso por perfil (admin/gestão/vendedor), alimentada por upload de dados via Excel
-Nome	SeeKPI — See Your Key Performance Indicators
-Público-alvo	Equipe comercial: administradores, gerentes, supervisores e vendedores
-🏗️ Stack Tecnológica
-Camada	Tecnologia	Justificativa
-Framework	Next.js 15 (React)	Full-stack, alta performance, deploy simples
-Linguagem	TypeScript	Segurança de tipos, produtividade no desenvolvimento
-Estilização	CSS Vanilla + variáveis CSS	Máxima flexibilidade, design premium
-Banco de Dados	SQLite (migração futura para PostgreSQL)	Zero configuração, ideal para MVP
-Processamento	SheetJS (xlsx)	Leitura nativa de arquivos .xlsx
-Gráficos	Recharts	Visualizações animadas e responsivas
-Autenticação	NextAuth.js	Login seguro com sistema de papéis
-Mobile	PWA (Progressive Web App)	Instalável no celular, experiência nativa
-👥 Estrutura de Acesso
+> **Documento do Projeto**  
+> **Versão:** 1.0  
+> **Data:** Junho/2026
 
-Perfil	Visualização	Ações
-Admin	Todos os dados, todas as pastas	Upload Excel, gerenciar usuários, definir metas, configurar sistema
-Gerente	Consolidado de todos os supervisores	Dashboards consolidados, comparar equipes
-Supervisor	Sua equipe (~40 vendedores)	Dashboard da equipe, comparar vendedores
-Vendedor	Apenas seus dados individuais	Visualizar KPIs, simulador de pedidos
-📈 KPIs Acompanhados
-KPI	Descrição	Tipo
-Vendas	Acompanhamento de vendas — meta vs realizado	Quantitativo
-Positivações	Atendimentos e clientes visitados	Quantitativo
-Reppos	Vendas no e-commerce	Qualitativo
-Categorias	Vendas por categoria de produto	Qualitativo
-MSL	Must-Stock List — cobertura de produtos por cliente	Qualitativo
-PDV Premiado	Ranking das melhores redes e pontos de venda	Premiação
-🏢 Estrutura Organizacional
-Dimensão	Detalhe
-Pastas	5 pastas (A até F) — cada uma com fornecedores específicos
-Por pasta	~40 vendedores, 3 supervisores, 1 gerente
-Hierarquia de metas	Vendedor → Supervisor (soma da equipe) → Gerente (soma dos supervisores)
-Atualização	Diária
-Fornecedores do Projeto (Fase Inicial)
-ID	Fornecedor
-16671	Reckitt Core
-16677	Condor Limpeza
-16814	Condor Beleza
-17460	Condor Higiene
-17696	Vestacy
-19740	Kimberly Clark
-📊 Estrutura de Dados (Base Excel)
-A base de dados é alimentada por planilhas Excel com a seguinte estrutura de colunas:
+---
 
-Coluna	Descrição	Exemplo
-ID RCA	Código do vendedor (até 3 dígitos)	108
-Nome RCA	Nome do vendedor (Pasta-Rota-Nome)	E-ST-08- GABRIEL CAVALCANTE SILVA
-Nome Supervisor	Nome do supervisor (Pasta-Rota-Nome)	E-ST (NATAN ABNER BEZERRA MEDEIROS)
-Número Pedido	Identificador do pedido	569002459
-Posição Pedido	Status: F(Faturado) B(Bloqueado) L(Liberado) M(Montado)	F
-Data Pedido	Data no formato DD-MM-YYYY	16-06-2026
-ID Cliente	Código do cliente (até 6 dígitos)	125377
-Cliente	Razão social do cliente	ATACADÃO ALMIRANTE...
-ID Produto	Código do produto (1-6 dígitos)	125636
-Nome Produto	Descrição do produto	VEJA PERF CONCENTRADO 100ML...
-ID Fornecedor	Código do fornecedor (até 6 dígitos)	16671
-Nome Fornecedor	Nome do fornecedor	RECKITT CORE
-Qtde Cx	Unidades por caixa	16
-Qtde Und	Unidades vendidas	6
-Valor	Valor da venda (R$)	R$ 21,24
-Qtde Cx Vendida	Caixas vendidas (inteiro ou fracionado)	0,25
-📋 Roadmap de Desenvolvimento
-🔹 Fase 1 — Fundação
-Setup do projeto, design system premium (tema escuro, glassmorphism, animações), layout principal com sidebar responsiva, tela de login e sistema de autenticação com 3 perfis.
+# 🎯 Visão Geral
 
-🔹 Fase 2 — Motor de Dados
-Upload de Excel com drag & drop, processamento automático, banco de dados SQLite, validação de dados, templates de planilha e histórico de uploads.
+| Item | Detalhe |
+|------|---------|
+| **Problema** | Dados de vendas fragmentados em múltiplas planilhas Excel distribuídas por e-mail, dificultando o acesso rápido às informações pela equipe comercial. |
+| **Solução** | Plataforma web responsiva com dashboards interativos, controle de acesso por perfil e alimentação dos dados através de upload de planilhas Excel. |
+| **Nome** | **SeeKPI — See Your Key Performance Indicators** |
+| **Público-alvo** | Administradores, gerentes, supervisores e vendedores. |
 
-🔹 Fase 3 — Dashboards de KPIs
-Dashboards interativos para cada KPI (Vendas, Positivações, Reppos, Categorias, MSL, PDV Premiado), filtros globais e visão hierárquica por perfil de acesso.
+---
 
-🔹 Fase 4 — Gamificação & Simulador
-Simulador de pedidos com impacto visual no atingimento, barras de progresso gamificadas, sistema de badges/conquistas, leaderboard e notificações.
+# 🏗️ Stack Tecnológica
 
-🔹 Fase 5 — Polish & Mobile
-PWA completo com suporte offline, modo claro/escuro, exportação de dashboards (PDF/imagem), otimização de performance e deploy em produção.
+| Camada | Tecnologia | Justificativa |
+|---------|------------|---------------|
+| **Framework** | Next.js 15 (React) | Full-stack moderno, alta performance e deploy simplificado |
+| **Linguagem** | TypeScript | Segurança de tipos e maior produtividade |
+| **Estilização** | CSS Vanilla + CSS Variables | Flexibilidade máxima e design premium |
+| **Banco de Dados** | SQLite *(migração futura para PostgreSQL)* | Simples para MVP e sem configuração complexa |
+| **Processamento Excel** | SheetJS (xlsx) | Leitura nativa de arquivos `.xlsx` |
+| **Gráficos** | Recharts | Dashboards responsivos e animados |
+| **Autenticação** | NextAuth.js | Login seguro com controle de permissões |
+| **Mobile** | Progressive Web App (PWA) | Aplicação instalável e experiência próxima ao nativo |
 
-🎨 Identidade Visual
-Elemento	Especificação
-Tema	Escuro com acentos vibrantes (vermelho corporativo)
-Efeitos	Glassmorphism sutil, micro-animações
+---
+
+# 👥 Estrutura de Acesso
+
+| Perfil | Visualização | Permissões |
+|---------|--------------|------------|
+| 👑 **Administrador** | Todos os dados | Upload de planilhas, gerenciamento de usuários, definição de metas e configurações do sistema |
+| 📊 **Gerente** | Todos os supervisores | Dashboards consolidados e comparação entre equipes |
+| 👥 **Supervisor** | Sua equipe (~40 vendedores) | Dashboard da equipe e comparação entre vendedores |
+| 🛒 **Vendedor** | Apenas seus dados | Consulta de KPIs individuais e simulador de pedidos |
+
+---
+
+# 📈 KPIs Monitorados
+
+| KPI | Descrição | Categoria |
+|-----|-----------|-----------|
+| 💰 Vendas | Meta x Realizado | Quantitativo |
+| 🛍️ Positivações | Clientes atendidos e positivados | Quantitativo |
+| 🌐 Reppos | Performance no e-commerce | Qualitativo |
+| 📦 Categorias | Vendas por categoria de produto | Qualitativo |
+| ✅ MSL | Must-Stock List (Cobertura de Mix) | Qualitativo |
+| 🏆 PDV Premiado | Ranking das melhores lojas e redes | Premiação |
+
+---
+
+# 🏢 Estrutura Organizacional
+
+| Item | Detalhe |
+|------|---------|
+| **Pastas** | 5 Pastas (A até F), cada uma representando um grupo de fornecedores |
+| **Estrutura** | ~40 vendedores • 3 supervisores • 1 gerente |
+| **Hierarquia** | Vendedor → Supervisor → Gerente |
+| **Atualização dos Dados** | Diária |
+
+---
+
+# 🏭 Fornecedores (Fase Inicial)
+
+| ID | Fornecedor |
+|----|------------|
+| 16671 | Reckitt Core |
+| 16677 | Condor Limpeza |
+| 16814 | Condor Beleza |
+| 17460 | Condor Higiene |
+| 17696 | Vestacy |
+| 19740 | Kimberly Clark |
+
+---
+
+# 📄 Estrutura da Base de Dados (Excel)
+
+A aplicação recebe uma planilha Excel contendo os seguintes campos:
+
+| Coluna | Descrição | Exemplo |
+|--------|-----------|----------|
+| ID RCA | Código do vendedor | 108 |
+| Nome RCA | Nome completo do vendedor | E-ST-08- GABRIEL CAVALCANTE SILVA |
+| Nome Supervisor | Supervisor responsável | E-ST (NATAN ABNER BEZERRA MEDEIROS) |
+| Número Pedido | Identificador do pedido | 569002459 |
+| Posição Pedido | Status do pedido (F, B, L ou M) | F |
+| Data Pedido | Data do pedido | 16-06-2026 |
+| ID Cliente | Código do cliente | 125377 |
+| Cliente | Razão Social | ATACADÃO ALMIRANTE... |
+| ID Produto | Código do produto | 125636 |
+| Nome Produto | Descrição do produto | VEJA PERF CONCENTRADO 100ML... |
+| ID Fornecedor | Código do fornecedor | 16671 |
+| Nome Fornecedor | Nome do fornecedor | RECKITT CORE |
+| Qtde Cx | Quantidade por caixa | 16 |
+| Qtde Und | Quantidade em unidades | 6 |
+| Valor | Valor vendido | R$ 21,24 |
+| Qtde Cx Vendida | Quantidade de caixas vendidas | 0,25 |
+
+---
+
+# 🚀 Roadmap
+
+## 🔹 Fase 1 — Fundação
+
+- Setup do projeto
+- Design System premium
+- Tema escuro
+- Glassmorphism
+- Sidebar responsiva
+- Tela de Login
+- Sistema de autenticação
+- Controle de acesso por perfil
+
+---
+
+## 🔹 Fase 2 — Motor de Dados
+
+- Upload de Excel via Drag & Drop
+- Processamento automático
+- Persistência em SQLite
+- Validação dos dados
+- Templates de planilha
+- Histórico de uploads
+
+---
+
+## 🔹 Fase 3 — Dashboards
+
+Desenvolvimento dos dashboards para:
+
+- 💰 Vendas
+- 🛍️ Positivações
+- 🌐 Reppos
+- 📦 Categorias
+- ✅ MSL
+- 🏆 PDV Premiado
+
+Incluindo:
+
+- Filtros globais
+- Comparativos
+- Visão hierárquica conforme perfil de acesso
+
+---
+
+## 🔹 Fase 4 — Gamificação
+
+- Simulador de Pedidos
+- Barras de progresso
+- Sistema de Badges
+- Leaderboard
+- Notificações de desempenho
+
+---
+
+## 🔹 Fase 5 — Polish & Mobile
+
+- Progressive Web App (PWA)
+- Suporte Offline
+- Tema Claro / Escuro
+- Exportação em PDF e Imagem
+- Otimização de Performance
+- Deploy em Produção
+
+---
+
+# 🎨 Identidade Visual
+
+| Elemento | Especificação |
+|----------|---------------|
+| **Tema** | Escuro com detalhes em vermelho corporativo |
+| **Estilo** | Glassmorphism elegante |
+| **Animações** | Microinterações suaves |
+| **Experiência** | Interface moderna, limpa e responsiva |
+
+---
+
+# 🎯 Objetivo do Projeto
+
+O **SeeKPI** tem como objetivo centralizar todos os indicadores comerciais em uma única plataforma moderna, permitindo que vendedores, supervisores, gerentes e administradores acompanhem seus resultados em tempo real através de dashboards intuitivos, reduzindo a dependência de planilhas e aumentando a velocidade na tomada de decisão.
 Tipografia	Inter (Google Fonts)
 Responsividade	Desktop, tablet e mobile
 Instalação	PWA — direto do navegador
