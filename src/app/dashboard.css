@@ -1,0 +1,226 @@
+/* ============================================
+   Dashboard Page Styles
+   Layout with fixed sidebar + scrollable content
+   ============================================ */
+
+/* Main app layout: sidebar + content side by side */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary, #0a0a0f);
+}
+
+/* Content area offset by sidebar width */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When sidebar is collapsed */
+.main-content.collapsed {
+  margin-left: var(--sidebar-collapsed-width, 72px);
+}
+
+/* Scrollable page content below header */
+.page-content {
+  flex: 1;
+  padding: 1.5rem 2rem 2rem;
+  overflow-y: auto;
+}
+
+/* ============================================
+   KPI Cards Grid
+   ============================================ */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Stagger animation wrapper for each card */
+.kpi-card-wrapper {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kpi-card-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ============================================
+   Overview Section (Charts placeholder)
+   ============================================ */
+
+.overview-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #f0f0f5);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.overview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.6;
+}
+
+.placeholder-text {
+  color: var(--text-secondary, #8a8a9a);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* ============================================
+   Quick Stats Row
+   ============================================ */
+
+.quick-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.quick-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  transition: transform 0.2s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.quick-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 212, 126, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.quick-stat-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.quick-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.quick-stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #f0f0f5);
+  letter-spacing: -0.02em;
+}
+
+.quick-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8a8a9a);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================
+   Responsive Breakpoints
+   ============================================ */
+
+/* Tablet: 2-column grid */
+@media (max-width: 1024px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  .quick-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .page-content {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+}
+
+/* Mobile: single column, sidebar overlays */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+
+  .main-content.collapsed {
+    margin-left: 0;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .quick-stats-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .overview-placeholder {
+    min-height: 160px;
+    border-radius: 12px;
+  }
+
+  .quick-stat-card {
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+
+  .quick-stat-value {
+    font-size: 1.15rem;
+  }
+}
+
+/* Small mobile tweaks */
+@media (max-width: 480px) {
+  .page-content {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+}
